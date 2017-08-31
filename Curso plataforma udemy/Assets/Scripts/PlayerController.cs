@@ -79,8 +79,24 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
 
         }
 
+       
 
+    }
+    private void OnCollisionEnter2D(Collision2D collision) //código para quando o player estiver em cima da plataforma que anda
+    {
+        if(collision.gameObject.tag == "MovingPlatform")
+        {
+            transform.parent = collision.transform; //Posição do colisor (jogador) vira filha da posição do objeto que se mexe
+                                                   //para que a posição do player acompanhe a da plataforma, de forma que ele se mova junto.
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)//quando o player sair da plataforma (pulando ou outro jeito)
+    {
+        if(collision.gameObject.tag == "MovingPlatform")
+        {
+            transform.parent = null; //a posição do player deixa de ser filha da posição do objeto flutuante
 
+        }
     }
 
 
