@@ -6,6 +6,8 @@ public class HurtPlayer : MonoBehaviour {//Script referente a quando o jogaodr �
 
     public LevelManager theLevelManager;//variavel do tipo level Manager, que será utilizada para acessar o Objeto levelManager e seus valores
 
+    public int damageToGive;//valor inteiro referente ao dano que cada objeto causará no player
+
 	// Use this for initialization
 	void Start () {
 
@@ -22,7 +24,11 @@ public class HurtPlayer : MonoBehaviour {//Script referente a quando o jogaodr �
     {
         if(collision.tag == "Player")//se a tag do objeto colisor for "Player"
         {
-            theLevelManager.Respawn();//chama a função de respawn quando o jogador for o objeto colisor com o objeto que machucará
+
+            //theLevelManager.Respawn();
+
+            theLevelManager.HurtPlayer(damageToGive);//chama a função de adição de dano ao Player. 
+                                                     //Recebe como parâmetro o valor do dano recebido, setado na unity
         }
     }
 

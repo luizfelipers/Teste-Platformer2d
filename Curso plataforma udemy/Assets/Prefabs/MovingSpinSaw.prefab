@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4157123675697838}
   - component: {fileID: 114416845979538744}
+  - component: {fileID: 114781128713386738}
   m_Layer: 0
   m_Name: MovingSpinSaw
   m_TagString: Untagged
@@ -96,7 +97,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1081059922614358}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 47.89, y: -1.97, z: 0}
+  m_LocalPosition: {x: -13.05888, y: 4.584859, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4716979789767910}
@@ -145,7 +146,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.5
 --- !u!95 &95263608577000140
 Animator:
   serializedVersion: 3
@@ -175,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theLevelManager: {fileID: 0}
+  damageToGive: 1
 --- !u!114 &114416845979538744
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,6 +192,19 @@ MonoBehaviour:
   startPoint: {fileID: 4716979789767910}
   endPoint: {fileID: 4118984821662374}
   moveSpeed: 2
+--- !u!114 &114781128713386738
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1081059922614358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 498934907288b434c9d85089b406d51e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theLevelManager: {fileID: 0}
+  damageToGive: 1
 --- !u!212 &212981326042963570
 SpriteRenderer:
   m_ObjectHideFlags: 1

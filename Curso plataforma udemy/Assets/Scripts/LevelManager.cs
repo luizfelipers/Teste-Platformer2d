@@ -13,19 +13,41 @@ public class LevelManager : MonoBehaviour {
 
     public int coinCount;//variavel responsavel por guardar a pontuação do jogador
 
-    public Text coinText;
+    public Text coinText;//texto de UI que é responsável por mostrar na tela a quantidade de coins que o player tem
+
+    //Imagens referentes aos corações
+    public Image heart1;
+    public Image heart2;
+    public Image heart3;
+
+    //Sprites referentes aos estados dos corações
+    public Sprite heartFull;//cheio
+    public Sprite heartHalf;//mid
+    public Sprite heartEmpty;//vazio
+
+    public int maxHealth;//variável responsável por setar o valor da vida máxima do player
+    public int healthCount; //variável responsável por monitorar o nível de vida do PLayer
+    public bool respawning;//booleano que indica se o Player está em fase de respawn no momento ou não
 
 	// Use this for initialization
 	void Start () {
         thePlayer = FindObjectOfType<PlayerController>(); // Encontra o componente PlayerController (script), e com isso, retorna o único objeto que está ligado nele.
-        coinText.text = "Coins: 0";
 
+        coinText.text = "Coins: 0";//texto inicial exibido pelo UI de pontuação
+
+        healthCount = maxHealth;//vida inicial do jogador
     }
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+    {
+		if(healthCount <= 0 && respawning == false)// só respawna se a vida chegar em 0 e o player não estiver respawnando no momento
+        {
+            Respawn();//está dentro do método update, pois a checagem pela quantidade de vida do Player e se esta respawnando, deve ser feita a cada frame
+            respawning = true;//seta o bool respawning para verdadeiro
+        }
 	}
+
     public void Respawn() //Ativada quando o player morre
     {
         StartCoroutine("RespawnCo");//começa a coroutine
@@ -35,11 +57,15 @@ public class LevelManager : MonoBehaviour {
     {
         Instantiate(deathExplosion, thePlayer.transform.position, thePlayer.transform.rotation); //cria uma instancia do objeto com ParticleSystems (sangue) na posição em que o player morreu.
 
-        yield return new WaitForSeconds(waitToDie);
+        yield return new WaitForSeconds(waitToDie);//tempo de espera pra ele morrer
         thePlayer.gameObject.SetActive(false); // desliga o gameObject quando a função for chamada
 
 
 
+
+        healthCount = maxHealth;
+        respawning = false;//seta o bool respawning para falso
+        UpdateHeartMeter();
 
 
         thePlayer.transform.position = thePlayer.respawnPosition; //A nova posição do jogador será a posição do último respawn position
@@ -51,9 +77,69 @@ public class LevelManager : MonoBehaviour {
     }
     public void AddCoins(int coinsToAdd)
     {
-        coinCount += coinsToAdd;
-        coinText.text = "Coins: " + coinCount;//Atualiza o elemento de UI text, de modo que apareç
+        coinCount += coinsToAdd;//adiciona a pontuação referente ao gameObject, na pontuação total do Player
+        coinText.text = "Coins: " + coinCount;//Atualiza o elemento de UI text, de modo que apareça a pontuação do usuário
     }
+    public void HurtPlayer(int damageToTake)// função a ser chamada sempre que o Player morre
+    {
+        //healthCount = healthCount - damageToTake;
+        healthCount -= damageToTake;//a vida atual do player é subtraída peloo valor que o gameobject colisor atinge de dano
+        UpdateHeartMeter();
+    }
+    public void UpdateHeartMeter()//função que controla os sprites de vida do personagem
+    {
+        switch (healthCount)//recebe a quantidade de vida atual do Player
+        {
 
+
+            //Contagem na ordem decrescente = começa em Vida cheia e vai esvaziando
+            case 6:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartFull;
+                return;
+
+            case 5:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartHalf;
+                return;
+            case 4:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartFull;
+                heart3.sprite = heartEmpty;
+                return;
+
+            case 3:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartHalf;
+                heart3.sprite = heartEmpty;
+                return;
+
+            case 2:
+                heart1.sprite = heartFull;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+            case 1:
+                heart1.sprite = heartHalf;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+
+            case 0:
+                heart1.sprite = heartEmpty;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+
+            default:
+                heart1.sprite = heartEmpty;
+                heart2.sprite = heartEmpty;
+                heart3.sprite = heartEmpty;
+                return;
+        }
+
+    }
 
 }

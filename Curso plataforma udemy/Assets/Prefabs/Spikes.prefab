@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theLevelManager: {fileID: 0}
+  damageToGive: 1
 --- !u!212 &212019999969409140
 SpriteRenderer:
   m_ObjectHideFlags: 1

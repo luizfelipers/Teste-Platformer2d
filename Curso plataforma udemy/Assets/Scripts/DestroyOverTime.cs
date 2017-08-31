@@ -18,9 +18,9 @@ public class DestroyOverTime : MonoBehaviour {//script anexado nos componentes q
         lifeTime = lifeTime - Time.deltaTime; //o valor de vida dele será calculado
                                               //pela diferenca entre o valor de vida desejado e a variação de tempo durante um frame e outro
         Debug.Log(Time.deltaTime); //
-        if(lifeTime <= 0)
+        if(lifeTime <= 0)//quando o tempo de vida atual do object atinge 0, ele é destruido
         {
-            Destroy(gameObject);    
+            Destroy(gameObject);    //destroi o gameObject do projeto, para não encher de gameObjects durante a execução
         }
 	}
 }

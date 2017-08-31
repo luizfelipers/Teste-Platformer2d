@@ -57,7 +57,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.5
 --- !u!95 &95227491063965744
 Animator:
   serializedVersion: 3
@@ -87,6 +87,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theLevelManager: {fileID: 0}
+  damageToGive: 1
 --- !u!212 &212506984583810664
 SpriteRenderer:
   m_ObjectHideFlags: 1
