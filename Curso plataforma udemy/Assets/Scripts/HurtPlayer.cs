@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HurtPlayer : MonoBehaviour {//Script referente a quando o jogaodr é machucado. É anexado aos objetos que machucam o jogaodr
 
+    
+
     public LevelManager theLevelManager;//variavel do tipo level Manager, que será utilizada para acessar o Objeto levelManager e seus valores
 
     public int damageToGive;//valor inteiro referente ao dano que cada objeto causará no player
@@ -12,7 +14,7 @@ public class HurtPlayer : MonoBehaviour {//Script referente a quando o jogaodr �
 	void Start () {
 
         theLevelManager = FindObjectOfType<LevelManager>();//inicializa o objeto LevelManager na variável theLevelManager
-
+        
 
 	}
 	
@@ -29,6 +31,8 @@ public class HurtPlayer : MonoBehaviour {//Script referente a quando o jogaodr �
 
             theLevelManager.HurtPlayer(damageToGive);//chama a função de adição de dano ao Player. 
                                                      //Recebe como parâmetro o valor do dano recebido, setado na unity
+
+           
         }
     }
 

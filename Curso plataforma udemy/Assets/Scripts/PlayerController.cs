@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {//Script utilizado para controlar o jogador
 
+
+    public GameObject stomp;//gameObject referente ao colisor que checa quando o Player encostou na parte de cima do inimigo, para matá-lo
+
     public float moveSpeed; // Velocidade de movimento do jogador
     private Rigidbody2D myRigidBody; //variavel do tipo Rigidbody2d. Será usada para acessar os atributos desse componente no objeto 
     private SpriteRenderer myRenderer;//variável do tipo Sprite Renderer. Será usada para acessar os atributos desse componente, asssim como flipar o jogador
@@ -39,22 +42,30 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
                whatIsGround);//variável que define o que pode ser considerado como Ground ou terreno andável.
            
 
+        //TRECHOS DE CÓDIGO PARA REPRESENTAR MOVIMENTO DO PLAYER
 
+
+        //DIREITA
 		if(Input.GetAxisRaw("Horizontal") > 0f) // Caso o Input na horizontal (eixo X) seja maior que 0, o personagem anda pra direita
         {
             myRigidBody.velocity = new Vector3(moveSpeed, myRigidBody.velocity.y, 0f);
-            myRenderer.flipX = false;
+            myRenderer.flipX = false;//não flipa, pois o sprite  do player é naturalmente virado para a direita
         }
+
+        //ESQUERDA
         else if (Input.GetAxisRaw("Horizontal") < 0f) // Caso o Input na horizontal (eixo X) seja menor que 0, o personagem anda pra direita
         {
             myRigidBody.velocity = new Vector3(-moveSpeed, myRigidBody.velocity.y, 0f);
             myRenderer.flipX = true; //flipa o personagem, pois o sprite está virado para a esquerda.
         }
+        //PARADO NO EIXO X
         else
         {
-            myRigidBody.velocity = new Vector3(0, myRigidBody.velocity.y, 0f); //fica parado
+            myRigidBody.velocity = new Vector3(0, myRigidBody.velocity.y, 0f); //fica parado, não mexe o eixo X
 
         }
+
+        //PULO DO PLAYER
         if (Input.GetButtonDown("Jump") && isGrounded==true)// Caso o botão associado ao pulo no Input for pressionado e o jogador estiver no solo.
         {
             myRigidBody.velocity = new Vector3(myRigidBody.velocity.x, jumpSpeed, 0f); //pega a velocidade no X, e junta com a força do pulo. Num Vetor de 2 variáveis.
@@ -62,8 +73,20 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
         }
         myAnim.SetFloat("Speed", Mathf.Abs(myRigidBody.velocity.x));//Faz com que a variável Speed retorne apenas valores verdadeiros.
         myAnim.SetBool("Grounded", isGrounded);
-	}
-    private void OnTriggerEnter2D(Collider2D collision)
+
+        if(myRigidBody.velocity.y < 0) // caso a velocidade no eixo Y do jogador for menor que 0, ele estará caindo
+        {
+            stomp.SetActive(true);//a caixinha Stomp será ativada, de modo que o inimigo só será morto na queda do Player
+        }
+        else
+        {
+            stomp.SetActive(false); //velocidade acima ou igual a 0, então a caixa Stomp permanece desligada
+        }
+
+
+
+    }
+    private void OnTriggerEnter2D(Collider2D collision)//Quando o player entra em algum trigger
     {
         if(collision.tag == "KillPlane") //caso encoste no colisor referente ao Chão/abismo
         {
@@ -82,17 +105,20 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
        
 
     }
+
+    //TRECHO DE CÓDIGO REFERENTE A PLATAFORMA QUE SE MOVE
+
     private void OnCollisionEnter2D(Collision2D collision) //código para quando o player estiver em cima da plataforma que anda
     {
-        if(collision.gameObject.tag == "MovingPlatform")
+        if(collision.gameObject.tag == "MovingPlatform")  //casp a tag do colisor que entrará em contato com o player, for MovingPlaform
         {
-            transform.parent = collision.transform; //Posição do colisor (jogador) vira filha da posição do objeto que se mexe
+            transform.parent = collision.transform;   //Posição do colisor (jogador) vira filha da posição do objeto que se mexe
                                                    //para que a posição do player acompanhe a da plataforma, de forma que ele se mova junto.
         }
     }
     private void OnCollisionExit2D(Collision2D collision)//quando o player sair da plataforma (pulando ou outro jeito)
     {
-        if(collision.gameObject.tag == "MovingPlatform")
+        if(collision.gameObject.tag == "MovingPlatform")//caso a tag do colisor que perderá contato com o player, for MovingPlatform
         {
             transform.parent = null; //a posição do player deixa de ser filha da posição do objeto flutuante
 

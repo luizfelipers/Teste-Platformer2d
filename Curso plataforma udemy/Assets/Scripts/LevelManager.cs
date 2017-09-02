@@ -63,19 +63,19 @@ public class LevelManager : MonoBehaviour {
 
 
 
-        healthCount = maxHealth;
+        healthCount = maxHealth;//no começo do jogo, o Player começa com vida cheia
         respawning = false;//seta o bool respawning para falso
-        UpdateHeartMeter();
+        UpdateHeartMeter();//atualiza o valor da vida do usuário, com o Switch, no case 6, reiniciando o valor de vida para Total
 
 
         thePlayer.transform.position = thePlayer.respawnPosition; //A nova posição do jogador será a posição do último respawn position
-        yield return new WaitForSeconds(waitToRespawn);
+        yield return new WaitForSeconds(waitToRespawn);//demora para respawnar depois que todas as operações acima forem realizadas
 
 
         thePlayer.gameObject.SetActive(true); //liga o jogador
 
     }
-    public void AddCoins(int coinsToAdd)
+    public void AddCoins(int coinsToAdd)//função que adiciona uma certa quantidade de pontos, passada como parametro pela variavel indicada
     {
         coinCount += coinsToAdd;//adiciona a pontuação referente ao gameObject, na pontuação total do Player
         coinText.text = "Coins: " + coinCount;//Atualiza o elemento de UI text, de modo que apareça a pontuação do usuário
@@ -84,7 +84,7 @@ public class LevelManager : MonoBehaviour {
     {
         //healthCount = healthCount - damageToTake;
         healthCount -= damageToTake;//a vida atual do player é subtraída peloo valor que o gameobject colisor atinge de dano
-        UpdateHeartMeter();
+        UpdateHeartMeter();//atualiza UI da vida do usuário de acordo com o dano recebido
     }
     public void UpdateHeartMeter()//função que controla os sprites de vida do personagem
     {
@@ -94,7 +94,7 @@ public class LevelManager : MonoBehaviour {
 
             //Contagem na ordem decrescente = começa em Vida cheia e vai esvaziando
             case 6:
-                heart1.sprite = heartFull;
+                heart1.sprite = heartFull;//cheia 6/6
                 heart2.sprite = heartFull;
                 heart3.sprite = heartFull;
                 return;
@@ -102,40 +102,40 @@ public class LevelManager : MonoBehaviour {
             case 5:
                 heart1.sprite = heartFull;
                 heart2.sprite = heartFull;
-                heart3.sprite = heartHalf;
+                heart3.sprite = heartHalf;//5/6
                 return;
             case 4:
                 heart1.sprite = heartFull;
-                heart2.sprite = heartFull;
+                heart2.sprite = heartFull;// 4/6
                 heart3.sprite = heartEmpty;
                 return;
 
             case 3:
-                heart1.sprite = heartFull;
+                heart1.sprite = heartFull;// 3/6
                 heart2.sprite = heartHalf;
                 heart3.sprite = heartEmpty;
                 return;
 
             case 2:
-                heart1.sprite = heartFull;
+                heart1.sprite = heartFull;// 2/6
                 heart2.sprite = heartEmpty;
                 heart3.sprite = heartEmpty;
                 return;
             case 1:
-                heart1.sprite = heartHalf;
+                heart1.sprite = heartHalf;//  1/6
                 heart2.sprite = heartEmpty;
                 heart3.sprite = heartEmpty;
                 return;
 
             case 0:
-                heart1.sprite = heartEmpty;
+                heart1.sprite = heartEmpty;// 0/6, vazia, Player morto
                 heart2.sprite = heartEmpty;
                 heart3.sprite = heartEmpty;
                 return;
 
             default:
                 heart1.sprite = heartEmpty;
-                heart2.sprite = heartEmpty;
+                heart2.sprite = heartEmpty;//caso não seja nenhuma das outras opções, o player está morto.
                 heart3.sprite = heartEmpty;
                 return;
         }
