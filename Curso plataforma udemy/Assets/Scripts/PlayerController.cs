@@ -25,8 +25,12 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
 
     public float knockbackForce;//força adicionada ao player para quando ele for atingido por um inimigo 
     public float knockbackLenght;//duração do 'ricochete' quando o player for atingido
-
     private float knockbackCounter;
+
+    public float invincibilityLenght;
+    public float invincibilityCounter;
+
+   
 
 	// Use this for initialization  
 	void Start () {
@@ -81,6 +85,8 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
                 myRigidBody.velocity = new Vector3(myRigidBody.velocity.x, jumpSpeed, 0f); //pega a velocidade no X, e junta com a força do pulo. Num Vetor de 2 variáveis.
 
             }
+            levelManager.invincible = false;
+
         }
 
         if (knockbackCounter > 0)
@@ -97,6 +103,22 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
                 myRigidBody.velocity = new Vector3(knockbackForce, knockbackForce, 0f);
             }
         }
+
+        if(invincibilityCounter > 0)
+        {
+            invincibilityCounter -= Time.deltaTime;
+
+        }
+
+
+        if(invincibilityCounter <= 0)
+        {
+            levelManager.invincible = false;
+        }
+
+
+
+
 
         myAnim.SetFloat("Speed", Mathf.Abs(myRigidBody.velocity.x));//Faz com que a variável Speed retorne apenas valores verdadeiros.
         myAnim.SetBool("Grounded", isGrounded);
@@ -115,7 +137,8 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
         public void KnockBack()
         {
             knockbackCounter = knockbackLenght;
-
+        invincibilityCounter = invincibilityLenght;
+        levelManager.invincible = true;
         }
 
 
@@ -125,7 +148,8 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
         if(collision.tag == "KillPlane") //caso encoste no colisor referente ao Chão/abismo
         {
 
-            levelManager.Respawn(); // Invoca o método respawn do Level Manager
+            levelManager.healthCount = 0 ; // Invoca o método respawn do Level Manager
+           
             // gameObject.SetActive(false);
             //transform.position = respawnPosition; // A posição inicial do player passa a ser a posição do último checkpoint
         }

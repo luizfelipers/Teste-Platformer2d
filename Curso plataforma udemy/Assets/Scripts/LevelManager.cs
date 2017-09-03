@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager : MonoBehaviour
+{
 
     public float waitToRespawn; //valor referente ao atraso para o jogador voltar em cena quando mover  
     public PlayerController thePlayer; // variável do tipo PlayerController, que será usada para achar o gameObject.
@@ -32,9 +33,17 @@ public class LevelManager : MonoBehaviour {
 
     public ResetOnRespawn[] objectsToReset; //array de objectos que terão seus atributos resetados quando o jogo reiniciar
 
+    public bool invincible;
 
-	// Use this for initialization
-	void Start () {
+
+    public Text livesText;
+    public int currentLives;
+    public int startingLives;
+
+
+    // Use this for initialization
+    void Start()
+    {
         thePlayer = FindObjectOfType<PlayerController>(); // Encontra o componente PlayerController (script), e com isso, retorna o único objeto que está ligado nele.
 
         coinText.text = "Coins: 0";//texto inicial exibido pelo UI de pontuação
@@ -43,21 +52,38 @@ public class LevelManager : MonoBehaviour {
 
         objectsToReset = FindObjectsOfType<ResetOnRespawn>();
 
+        currentLives = startingLives;//no começo do jogo, o valor atual de vidas será o valor inicial de vidas, setado na Unity
+        livesText.text = "Vidas x " + currentLives;//texto inicial exibido no contador de vidas
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-		if(healthCount <= 0 && respawning == false)// só respawna se a vida chegar em 0 e o player não estiver respawnando no momento
+        if (healthCount <= 0 && respawning == false)// só respawna se a vida chegar em 0 e o player não estiver respawnando no momento
         {
             Respawn();//está dentro do método update, pois a checagem pela quantidade de vida do Player e se esta respawnando, deve ser feita a cada frame
             respawning = true;//seta o bool respawning para verdadeiro
         }
-	}
+    }
 
     public void Respawn() //Ativada quando o player morre
     {
-        StartCoroutine("RespawnCo");//começa a coroutine
+
+        currentLives -= 1;
+        livesText.text = "Vidas x " + currentLives;//texto do contador de vidas é atualizado no Respawn
+
+        if(currentLives > 0)
+        {
+            StartCoroutine("RespawnCo");//começa a coroutine
+        }
+        else
+        {
+            Instantiate(deathExplosion, thePlayer.transform.position, thePlayer.transform.rotation); //COLOCADO POR MIM - PRO PLAYER EXPLODIR TB QUANDO MORRER PELA ULTIMA VEZ
+            thePlayer.gameObject.SetActive(false); // desliga o gameObject quando a função for chamada
+            respawning = false;
+        }
+
+        
     }
 
     public IEnumerator RespawnCo()
@@ -71,20 +97,20 @@ public class LevelManager : MonoBehaviour {
 
 
         healthCount = maxHealth;//no começo do jogo, o Player começa com vida cheia
-        respawning = false;//seta o bool respawning para falso
+        //seta o bool respawning para falso
         UpdateHeartMeter();//atualiza o valor da vida do usuário, com o Switch, no case 6, reiniciando o valor de vida para Total
         coinCount = 0;
         coinText.text = "Coins:" + coinCount;
 
         thePlayer.transform.position = thePlayer.respawnPosition; //A nova posição do jogador será a posição do último respawn position
         yield return new WaitForSeconds(waitToRespawn);//demora para respawnar depois que todas as operações acima forem realizadas
-
+        respawning = false;
 
         thePlayer.gameObject.SetActive(true); //liga o jogador
 
-        for(int i=0; i < objectsToReset.Length; i++)
+        for (int i = 0; i < objectsToReset.Length; i++)
         {
-            
+
             objectsToReset[i].gameObject.SetActive(true);
             objectsToReset[i].ResetObject();
         }
@@ -98,11 +124,19 @@ public class LevelManager : MonoBehaviour {
     }
     public void HurtPlayer(int damageToTake)// função a ser chamada sempre que o Player morre
     {
-        //healthCount = healthCount - damageToTake;
-        healthCount -= damageToTake;//a vida atual do player é subtraída peloo valor que o gameobject colisor atinge de dano
-        UpdateHeartMeter();//atualiza UI da vida do usuário de acordo com o dano recebido
+        if (invincible == false)
+        {
+            //healthCount = healthCount - damageToTake;
+            healthCount -= damageToTake;//a vida atual do player é subtraída peloo valor que o gameobject colisor atinge de dano
+            UpdateHeartMeter();//atualiza UI da vida do usuário de acordo com o dano recebido
+            if(healthCount > 0)
+            {
+                thePlayer.KnockBack();
+            }
+            
+        }
 
-        thePlayer.KnockBack();
+
 
 
     }
