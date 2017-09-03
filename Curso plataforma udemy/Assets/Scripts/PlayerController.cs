@@ -21,7 +21,12 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
     private Animator myAnim;// Variavel do tipo animator, que será usada para acessar seus atributos e mudar os bools para mudar animações
     public Vector3 respawnPosition; //vetor de 3 posições, referente a posição de ressurgimento do jogador
 
-    public LevelManager levelManager;
+    public LevelManager levelManager; //variável que reeberá o Objeto level manager, usado para controlar o funcionamento da fase
+
+    public float knockbackForce;//força adicionada ao player para quando ele for atingido por um inimigo 
+    public float knockbackLenght;//duração do 'ricochete' quando o player for atingido
+
+    private float knockbackCounter;
 
 	// Use this for initialization  
 	void Start () {
@@ -31,50 +36,72 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
         respawnPosition = transform.position;//Posição inicial do RespawnPoint será a posição incial do Player. (Caso não atinja os checkpoints).
         levelManager = FindObjectOfType<LevelManager>();//Linka o objeto Level Manager á variável levelManager, para poder manipular seus atributos
         respawnPosition = transform.position; //posição de Respawn inicial (caso não tenha atingido checkpoints) é a posição inicial do jogador no jogo. Ou seja, volta pra posição default.
-    }   
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         isGrounded = Physics2D.OverlapCircle //OverlapCircle é um circulo imaginário desenhado no pé do personagem
-            ( groundCheck.position, //recebe a posição do object que está pregado no pé do player, para saber que o check deve ocorrer nessa área
+            (groundCheck.position, //recebe a posição do object que está pregado no pé do player, para saber que o check deve ocorrer nessa área
              groundCheckRadius,//raio definido para o gameobject que servirá de sensor de toque no chao
                whatIsGround);//variável que define o que pode ser considerado como Ground ou terreno andável.
-           
-
-        //TRECHOS DE CÓDIGO PARA REPRESENTAR MOVIMENTO DO PLAYER
 
 
-        //DIREITA
-		if(Input.GetAxisRaw("Horizontal") > 0f) // Caso o Input na horizontal (eixo X) seja maior que 0, o personagem anda pra direita
+
+        if (knockbackCounter <= 0)
         {
-            myRigidBody.velocity = new Vector3(moveSpeed, myRigidBody.velocity.y, 0f);
-            myRenderer.flipX = false;//não flipa, pois o sprite  do player é naturalmente virado para a direita
+
+            //TRECHOS DE CÓDIGO PARA REPRESENTAR MOVIMENTO DO PLAYER
+
+
+            //DIREITA
+            if (Input.GetAxisRaw("Horizontal") > 0f) // Caso o Input na horizontal (eixo X) seja maior que 0, o personagem anda pra direita
+            {
+                myRigidBody.velocity = new Vector3(moveSpeed, myRigidBody.velocity.y, 0f);
+                myRenderer.flipX = false;//não flipa, pois o sprite  do player é naturalmente virado para a direita
+            }
+
+            //ESQUERDA
+            else if (Input.GetAxisRaw("Horizontal") < 0f) // Caso o Input na horizontal (eixo X) seja menor que 0, o personagem anda pra direita
+            {
+                myRigidBody.velocity = new Vector3(-moveSpeed, myRigidBody.velocity.y, 0f);
+                myRenderer.flipX = true; //flipa o personagem, pois o sprite está virado para a esquerda.
+            }
+            //PARADO NO EIXO X
+            else
+            {
+                myRigidBody.velocity = new Vector3(0, myRigidBody.velocity.y, 0f); //fica parado, não mexe o eixo X
+
+            }
+
+            //PULO DO PLAYER
+            if (Input.GetButtonDown("Jump") && isGrounded == true)// Caso o botão associado ao pulo no Input for pressionado e o jogador estiver no solo.
+            {
+                myRigidBody.velocity = new Vector3(myRigidBody.velocity.x, jumpSpeed, 0f); //pega a velocidade no X, e junta com a força do pulo. Num Vetor de 2 variáveis.
+
+            }
         }
 
-        //ESQUERDA
-        else if (Input.GetAxisRaw("Horizontal") < 0f) // Caso o Input na horizontal (eixo X) seja menor que 0, o personagem anda pra direita
+        if (knockbackCounter > 0)
         {
-            myRigidBody.velocity = new Vector3(-moveSpeed, myRigidBody.velocity.y, 0f);
-            myRenderer.flipX = true; //flipa o personagem, pois o sprite está virado para a esquerda.
-        }
-        //PARADO NO EIXO X
-        else
-        {
-            myRigidBody.velocity = new Vector3(0, myRigidBody.velocity.y, 0f); //fica parado, não mexe o eixo X
+            knockbackCounter -= Time.deltaTime;
 
+
+            if (myRenderer.flipX == false)
+            {
+                myRigidBody.velocity = new Vector3(-knockbackForce, knockbackForce, 0f);
+            }
+            else
+            {
+                myRigidBody.velocity = new Vector3(knockbackForce, knockbackForce, 0f);
+            }
         }
 
-        //PULO DO PLAYER
-        if (Input.GetButtonDown("Jump") && isGrounded==true)// Caso o botão associado ao pulo no Input for pressionado e o jogador estiver no solo.
-        {
-            myRigidBody.velocity = new Vector3(myRigidBody.velocity.x, jumpSpeed, 0f); //pega a velocidade no X, e junta com a força do pulo. Num Vetor de 2 variáveis.
-
-        }
         myAnim.SetFloat("Speed", Mathf.Abs(myRigidBody.velocity.x));//Faz com que a variável Speed retorne apenas valores verdadeiros.
         myAnim.SetBool("Grounded", isGrounded);
 
-        if(myRigidBody.velocity.y < 0) // caso a velocidade no eixo Y do jogador for menor que 0, ele estará caindo
+        if (myRigidBody.velocity.y < 0) // caso a velocidade no eixo Y do jogador for menor que 0, ele estará caindo
         {
             stomp.SetActive(true);//a caixinha Stomp será ativada, de modo que o inimigo só será morto na queda do Player
         }
@@ -83,9 +110,16 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
             stomp.SetActive(false); //velocidade acima ou igual a 0, então a caixa Stomp permanece desligada
         }
 
-
-
     }
+        //CÓDIGO PARA RICOCHETE DO PLAYER, QUANDO LEVAR DANO
+        public void KnockBack()
+        {
+            knockbackCounter = knockbackLenght;
+
+        }
+
+
+    
     private void OnTriggerEnter2D(Collider2D collision)//Quando o player entra em algum trigger
     {
         if(collision.tag == "KillPlane") //caso encoste no colisor referente ao Chão/abismo

@@ -101,6 +101,10 @@ public class LevelManager : MonoBehaviour {
         //healthCount = healthCount - damageToTake;
         healthCount -= damageToTake;//a vida atual do player é subtraída peloo valor que o gameobject colisor atinge de dano
         UpdateHeartMeter();//atualiza UI da vida do usuário de acordo com o dano recebido
+
+        thePlayer.KnockBack();
+
+
     }
     public void UpdateHeartMeter()//função que controla os sprites de vida do personagem
     {

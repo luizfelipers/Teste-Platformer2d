@@ -653,6 +653,7 @@ MonoBehaviour:
   maxHealth: 6
   healthCount: 0
   respawning: 0
+  objectsToReset: []
 --- !u!4 &443010397
 Transform:
   m_ObjectHideFlags: 0
@@ -3006,6 +3007,8 @@ MonoBehaviour:
   isGrounded: 0
   respawnPosition: {x: 0, y: 0, z: 0}
   levelManager: {fileID: 0}
+  knockbackForce: 4
+  knockbackLenght: 0.1
 --- !u!95 &1661876309
 Animator:
   serializedVersion: 3
