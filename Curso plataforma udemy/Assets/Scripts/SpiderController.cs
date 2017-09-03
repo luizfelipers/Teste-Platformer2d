@@ -7,7 +7,7 @@ public class SpiderController : MonoBehaviour {
     public float moveSpeed; //variavel referente a velocidade que a aranha se locomoverá
     public bool canMove;//variavel que autoriza o movimento
 
-    private Rigidbody2D myRigidBody;
+    private Rigidbody2D myRigidBody;//vari´´avel que será ultilizada para acessar os atributos do RigidBody da aranha
 
 	// Use this for initialization
 	void Start () {
@@ -33,8 +33,13 @@ public class SpiderController : MonoBehaviour {
     {
         if(collision.tag == "KillPlane")//caso a tag do colisor seja KillPlane
         {
-            Destroy(gameObject);//gameObject é destru,ido
+            gameObject.SetActive(false);//gameObject é desativado, ao invés de destruído, para que possa ser Resetado quando o player Respawnar
+
 
         }
+    }
+    private void OnEnable()
+    {
+        canMove = false;
     }
 }

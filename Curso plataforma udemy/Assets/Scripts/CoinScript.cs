@@ -24,7 +24,11 @@ public class CoinScript : MonoBehaviour {
        if(collision.tag == "Player") //checa se o objeto colisor tem a tag Player
         {
             theLevelManager.AddCoins(coinValue);//aciona o método AddCoins do script LevelManager. Com isso a soma do valor da moeda com a pontuação atual é realizada
-            Destroy(gameObject);//Destroi o gameObject da moeda na hierarquia do jogo
+
+
+            // Destroy(gameObject);//Destroi o gameObject da moeda na hierarquia do jogo
+
+            gameObject.SetActive(false);
 
         }
     }

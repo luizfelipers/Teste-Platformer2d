@@ -23,7 +23,9 @@ public class StompEnemy : MonoBehaviour {
     {
         if(collision.tag == "Enemy")//Caso o colisor do Stomp (colisor abaixo do player), entre em contato com um inimigo
         {
-            Destroy(collision.gameObject);//o inimigo é destruido
+            //Destroy(collision.gameObject);//o inimigo é destruido
+
+            collision.gameObject.SetActive(false);
 
             Instantiate(deathExplosion, collision.transform.position, collision.transform.rotation);//instancia uma animação de sanguinho no lugar da morte do inimigo
 

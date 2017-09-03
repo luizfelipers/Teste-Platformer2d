@@ -27,7 +27,11 @@ public class LevelManager : MonoBehaviour {
 
     public int maxHealth;//variável responsável por setar o valor da vida máxima do player
     public int healthCount; //variável responsável por monitorar o nível de vida do PLayer
+
     public bool respawning;//booleano que indica se o Player está em fase de respawn no momento ou não
+
+    public ResetOnRespawn[] objectsToReset; //array de objectos que terão seus atributos resetados quando o jogo reiniciar
+
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +40,9 @@ public class LevelManager : MonoBehaviour {
         coinText.text = "Coins: 0";//texto inicial exibido pelo UI de pontuação
 
         healthCount = maxHealth;//vida inicial do jogador
+
+        objectsToReset = FindObjectsOfType<ResetOnRespawn>();
+
     }
 	
 	// Update is called once per frame
@@ -66,13 +73,22 @@ public class LevelManager : MonoBehaviour {
         healthCount = maxHealth;//no começo do jogo, o Player começa com vida cheia
         respawning = false;//seta o bool respawning para falso
         UpdateHeartMeter();//atualiza o valor da vida do usuário, com o Switch, no case 6, reiniciando o valor de vida para Total
-
+        coinCount = 0;
+        coinText.text = "Coins:" + coinCount;
 
         thePlayer.transform.position = thePlayer.respawnPosition; //A nova posição do jogador será a posição do último respawn position
         yield return new WaitForSeconds(waitToRespawn);//demora para respawnar depois que todas as operações acima forem realizadas
 
 
         thePlayer.gameObject.SetActive(true); //liga o jogador
+
+        for(int i=0; i < objectsToReset.Length; i++)
+        {
+            
+            objectsToReset[i].gameObject.SetActive(true);
+            objectsToReset[i].ResetObject();
+        }
+
 
     }
     public void AddCoins(int coinsToAdd)//função que adiciona uma certa quantidade de pontos, passada como parametro pela variavel indicada
