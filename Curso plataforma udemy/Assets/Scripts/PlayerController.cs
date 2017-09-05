@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
     public float invincibilityLenght;
     public float invincibilityCounter;
 
+    public AudioSource jumpSound;
+    public AudioSource hitHurtSound;
+
    
 
 	// Use this for initialization  
@@ -83,7 +86,7 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
             if (Input.GetButtonDown("Jump") && isGrounded == true)// Caso o botão associado ao pulo no Input for pressionado e o jogador estiver no solo.
             {
                 myRigidBody.velocity = new Vector3(myRigidBody.velocity.x, jumpSpeed, 0f); //pega a velocidade no X, e junta com a força do pulo. Num Vetor de 2 variáveis.
-
+                jumpSound.Play();
             }
             levelManager.invincible = false;
 
@@ -149,7 +152,8 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
         {
 
             levelManager.healthCount = 0 ; // Invoca o método respawn do Level Manager
-           
+            levelManager.UpdateHeartMeter();
+
             // gameObject.SetActive(false);
             //transform.position = respawnPosition; // A posição inicial do player passa a ser a posição do último checkpoint
         }
@@ -164,7 +168,7 @@ public class PlayerController : MonoBehaviour {//Script utilizado para controlar
 
     }
 
-    //TRECHO DE CÓDIGO REFERENTE A PLATAFORMA QUE SE MOVE
+    //TRECHO DE CÓDIGO REFERENTE AO CONTATO DO PLAYER COM A PLATAFORMA QUE SE MOVE
 
     private void OnCollisionEnter2D(Collision2D collision) //código para quando o player estiver em cima da plataforma que anda
     {
